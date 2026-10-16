@@ -6,7 +6,7 @@ from datetime import date
 app = Flask(
     __name__,
     template_folder="templates",
-    static_folder="templates/static"
+    static_folder="static"
 )
 
 DATABASE = "tasks.db"
