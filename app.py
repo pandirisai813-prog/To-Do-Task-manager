@@ -1,6 +1,7 @@
 
 from flask import Flask, render_template, request, jsonify
 import sqlite3
+import os
 from datetime import date
 
 app = Flask(
@@ -37,6 +38,10 @@ def init_db():
 
     conn.commit()
     conn.close()
+
+
+# Initialize database when the application starts
+init_db()
 
 
 # Convert database row to JSON-compatible dictionary
@@ -221,15 +226,17 @@ def delete_task(task_id):
     )
 
     conn.commit()
+
+    deleted = cursor.rowcount > 0
     conn.close()
 
-    if cursor.rowcount == 0:
+    if not deleted:
         return jsonify({"error": "Task not found."}), 404
 
     return jsonify({"message": "Task deleted successfully."})
 
-import os
 
+# Run the application locally
 if __name__ == "__main__":
     app.run(
         host="0.0.0.0",
