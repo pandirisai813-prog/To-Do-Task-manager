@@ -1,0 +1,162 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TaskFlow | Task Manager</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a href="/" class="brand"><span class="brand-icon">✓</span><span>TaskFlow</span></a>
+
+      <div class="side-label">WORKSPACE</div>
+      <nav class="side-nav">
+        <button class="nav-item active" data-filter="All"><span>⌂</span> Dashboard</button>
+        <button class="nav-item" data-filter="All"><span>▤</span> All Tasks</button>
+        <button class="nav-item" data-filter="Pending"><span>◷</span> In Progress</button>
+        <button class="nav-item" data-filter="Completed"><span>✓</span> Completed</button>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <div class="side-label">PREFERENCES</div>
+        <button class="nav-item" id="themeBtn"><span>☾</span> Toggle dark mode</button>
+        <div class="profile">
+          <div class="avatar">U</div>
+          <div><strong>My Workspace</strong><small>Personal account</small></div>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div>
+          <div class="eyebrow">WORKSPACE / OVERVIEW</div>
+          <h1>My Dashboard <span class="wave">✦</span></h1>
+          <p class="subtitle">Organize your work. Achieve more every day.</p>
+        </div>
+        <button class="primary-btn" id="newTaskBtn"><span>＋</span> Add New Task</button>
+      </header>
+
+      <section class="welcome-banner">
+        <div>
+          <span class="banner-label">YOUR PRODUCTIVITY SPACE</span>
+          <h2>Make today count.</h2>
+          <p>Small steps every day lead to big results.</p>
+        </div>
+        <div class="banner-art" aria-hidden="true">✦</div>
+      </section>
+
+      <section class="stats-grid">
+        <article class="stat-card">
+          <div class="stat-top"><span>Total tasks</span><span class="stat-icon purple">▤</span></div>
+          <strong id="total">0</strong><small>All your tasks</small>
+        </article>
+        <article class="stat-card">
+          <div class="stat-top"><span>In progress</span><span class="stat-icon orange">◷</span></div>
+          <strong id="pending">0</strong><small>Tasks to finish</small>
+        </article>
+        <article class="stat-card">
+          <div class="stat-top"><span>Completed</span><span class="stat-icon green">✓</span></div>
+          <strong id="completed">0</strong><small>Great work!</small>
+        </article>
+        <article class="stat-card">
+          <div class="stat-top"><span>Overdue</span><span class="stat-icon red">!</span></div>
+          <strong id="overdue">0</strong><small>Need your attention</small>
+        </article>
+      </section>
+
+      <section class="tasks-panel">
+        <div class="panel-heading">
+          <div>
+            <h2>My Tasks</h2>
+            <p>Manage and track your daily activities</p>
+          </div>
+          <span class="live-dot">● Live task list</span>
+        </div>
+
+        <div class="toolbar">
+          <div class="search-box"><span>⌕</span><input id="search" type="search" placeholder="Search your tasks..."></div>
+          <select id="statusFilter" aria-label="Filter tasks by status">
+            <option value="All">All statuses</option>
+            <option value="Pending">In progress</option>
+            <option value="Completed">Completed</option>
+          </select>
+          <select id="priorityFilter" aria-label="Filter tasks by priority">
+            <option value="All">All priorities</option>
+            <option value="High">High priority</option>
+            <option value="Medium">Medium priority</option>
+            <option value="Low">Low priority</option>
+          </select>
+        </div>
+
+        <div id="message" class="message" role="status" aria-live="polite"></div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>TASK TITLE</th>
+                <th>PRIORITY</th>
+                <th>STATUS</th>
+                <th>CREATED</th>
+                <th>DUE DATE</th>
+                <th>ACTIONS</th>
+              </tr>
+            </thead>
+            <tbody id="taskList">
+              <tr><td colspan="6" class="empty-state">Loading tasks...</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="table-footer">
+          <span id="pageInfo">Showing 0 tasks</span>
+          <div class="pagination">
+            <label for="rowsPerPage">Rows per page</label>
+            <select id="rowsPerPage">
+              <option value="5">5</option>
+              <option value="10" selected>10</option>
+              <option value="20">20</option>
+            </select>
+            <button id="prevPage" aria-label="Previous page">‹</button>
+            <button id="nextPage" aria-label="Next page">›</button>
+          </div>
+        </div>
+      </section>
+
+      <footer class="footer">Made for better productivity <span>✦</span></footer>
+    </main>
+  </div>
+
+  <dialog id="taskDialog">
+    <form id="taskForm">
+      <div class="dialog-heading">
+        <div><span class="eyebrow">TASK DETAILS</span><h2 id="dialogTitle">Create a task</h2></div>
+        <button type="button" id="closeDialog" class="close-btn" aria-label="Close">×</button>
+      </div>
+      <input type="hidden" id="taskId">
+      <label for="title">Task title *</label>
+      <input id="title" maxlength="150" required placeholder="e.g. Complete Python assignment">
+      <label for="description">Description</label>
+      <textarea id="description" rows="3" placeholder="Add a few details..."></textarea>
+      <div class="form-row">
+        <div><label for="deadline">Due date</label><input id="deadline" type="date"></div>
+        <div><label for="priority">Priority</label>
+          <select id="priority"><option>Low</option><option selected>Medium</option><option>High</option></select>
+        </div>
+      </div>
+      <div class="dialog-actions">
+        <button type="button" class="secondary-btn" id="cancelBtn">Cancel</button>
+        <button type="submit" class="primary-btn" id="saveBtn">Save Task</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
